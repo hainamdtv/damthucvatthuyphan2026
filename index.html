@@ -897,7 +897,104 @@
         .blog-link:hover {
             color: var(--accent-dark);
         }
+
+        /* BLOG MODAL SYSTEM */
+        .blog-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        .blog-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .blog-modal-container {
+            background: #fff;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            border-radius: 25px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .blog-modal-header {
+            padding: 40px 50px 20px;
+            position: relative;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .blog-modal-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 32px;
+            color: #ccc;
+            cursor: pointer;
+            transition: 0.3s;
+            line-height: 1;
+        }
+
+        .blog-modal-close:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .blog-modal-body {
+            padding: 20px 50px 50px;
+            overflow-y: auto;
+            line-height: 1.8;
+            color: #444;
+            font-size: 17px;
+        }
+
+        .blog-modal-body h2 {
+            color: var(--primary-dark);
+            margin: 35px 0 15px;
+            font-weight: 800;
+            font-size: 1.4em;
+        }
+
+        .blog-modal-body h3 {
+            color: var(--primary);
+            margin: 25px 0 10px;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .blog-modal-body p {
+            margin-bottom: 20px;
+        }
+
+        .blog-modal-footer {
+            padding: 30px 50px;
+            background: #fdfdfd;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .blog-modal-header, .blog-modal-body, .blog-modal-footer {
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+        }
     </style>
+
 
 
 </head>
@@ -1308,7 +1405,7 @@
                         <p class="blog-excerpt">
                             Bạn tin rằng ăn xong là sẽ có năng lượng? Sự thật là rất nhiều người cảm thấy nặng nề, hụt hơi ngay sau bữa ăn bồi bổ. Đó là khi dạ dày đang phải gồng mình quá tải...
                         </p>
-                        <a href="#survey" class="blog-link">Đọc tiếp bài viết ➔</a>
+                        <a href="#survey" onclick="openBlog(0); return false;" class="blog-link">Đọc tiếp bài viết ➔</a>
                     </div>
                 </article>
 
@@ -1324,7 +1421,7 @@
                         <p class="blog-excerpt">
                             Nhiều người lầm tưởng cứ đạm là tốt. Nhưng với hệ tiêu hóa nhạy cảm, đạm động vật giống như một "tảng đá" đè nặng, trong khi đạm thực vật thủy phân lại là "dòng suối" nuôi dưỡng êm dịu...
                         </p>
-                        <a href="#survey" class="blog-link">Khám phá ngay ➔</a>
+                        <a href="#survey" onclick="openBlog(1); return false;" class="blog-link">Khám phá ngay ➔</a>
                     </div>
                 </article>
 
@@ -1340,7 +1437,7 @@
                         <p class="blog-excerpt">
                             Một ly đạm Happy ấm nóng vào buổi sáng không chỉ giúp bạn tỉnh táo mà còn bảo vệ dạ dày khỏi những cơn chướng bụng khó chịu. Đừng để ngày mới bắt đầu nặng nề...
                         </p>
-                        <a href="#survey" class="blog-link">Xem bí quyết ➔</a>
+                        <a href="#survey" onclick="openBlog(2); return false;" class="blog-link">Xem bí quyết ➔</a>
                     </div>
                 </article>
 
@@ -1635,28 +1732,59 @@
     </style>
 
     <div class="float-contact">
+        <!-- Chatbot Button -->
+        <div id="chatbot-button" class="float-btn float-chat" onclick="toggleChat()" title="Tư vấn Happy" style="display: flex !important;">
+            <span class="float-label">Tư vấn viên Happy</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30px" height="30px">
+                <path fill="white" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+            </svg>
+        </div>
+
         <!-- Zalo Button -->
         <a href="https://zalo.me/0902869569" target="_blank" class="float-btn float-zalo" title="Nhắn tin Zalo">
             <span class="float-label">Chat Zalo ngay</span>
-            <!-- Zalo icon SVG -->
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M24 4C12.95 4 4 12.95 4 24c0 3.6.96 6.97 2.63 9.88L4 44l10.37-2.6A19.92 19.92 0 0 0 24 44c11.05 0 20-8.95 20-20S35.05 4 24 4zm-7.5 13h10l-10 10h10m-6-14v14" />
-                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="16" font-weight="bold"
-                    fill="white">Z</text>
+                <path d="M24 4C12.95 4 4 12.95 4 24c0 3.6.96 6.97 2.63 9.88L4 44l10.37-2.6A19.92 19.92 0 0 0 24 44c11.05 0 20-8.95 20-20S35.05 4 24 4zm-7.5 13h10l-10 10h10m-6-14v14" />
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Z</text>
             </svg>
         </a>
 
         <!-- Call Button -->
         <a href="tel:0902869569" class="float-btn float-call" title="Gọi ngay">
             <span class="float-label">Gọi tư vấn miễn phí</span>
-            <!-- Phone icon SVG -->
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
+                <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" />
             </svg>
         </a>
+
+        <!-- Chat Window -->
+        <div id="chat-window">
+            <div id="chat-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 10px; height: 10px; background: #4CAF50; border-radius: 50%;"></div>
+                    <span>Tư vấn viên Happy (24/7)</span>
+                </div>
+                <button onclick="toggleChat()" style="background: none; border: none; color: white; cursor: pointer; font-size: 20px;">×</button>
+            </div>
+            <div id="chat-body">
+                <div class="message bot-msg">
+                    Chào bạn nhé! Thật vui khi thấy bạn quan tâm đến đạm thực vật thuỷ phân Happy. Chúng ta ai cũng biết sức khoẻ là vàng. Bạn đang tìm giải pháp cho bản thân hay cho người thân vậy?
+                </div>
+            </div>
+            <div id="chat-options">
+                <!-- FAQ options will be injected here -->
+            </div>
+            <div id="chat-footer">
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <input type="text" id="chat-input" placeholder="Nhập câu hỏi của bạn..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 14px;">
+                    <button onclick="sendMessage()" style="background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer;">Gửi</button>
+                </div>
+                <button onclick="showBuyNow()" class="chat-buy-btn">👉 Đăng ký nhận ưu đãi ngay!</button>
+            </div>
+        </div>
     </div>
+
+
 
     <!-- SUCCESS MODAL -->
     <div class="modal-overlay" id="successModal">
@@ -1674,9 +1802,102 @@
         </div>
     </div>
 
+    <!-- BLOG MODAL STRUCTURE -->
+    <div id="blogModal" class="blog-modal">
+        <div class="blog-modal-container">
+            <div class="blog-modal-header">
+                <span class="blog-modal-close" onclick="closeBlog()">&times;</span>
+                <h2 id="modalTitle">Tiêu đề bài viết</h2>
+                <div id="modalDate" style="color: #999; font-size: 14px;">📅 Ngày đăng</div>
+            </div>
+            <div class="blog-modal-body" id="modalBody">
+                <!-- Nội dung bài viết sẽ được chèn vào đây -->
+            </div>
+            <div class="blog-modal-footer">
+                <button class="modal-close" onclick="closeBlog()">ĐÓNG BÀI VIẾT</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // GOOGLE SHEETS CONFIG
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRMVriPiZ7GTR1RTT1KtzTE-zXWUdZ5tYla9PXBFsBPCrIOshQd8nM6ymwZiTpPsbI/exec';
+
+        // BLOG CONTENT DATA
+        const blogArticles = [
+            {
+                title: "Mệt mỏi sau ăn: Dấu hiệu hệ tiêu hóa đang kêu cứu?",
+                date: "07 Tháng 4, 2026",
+                content: `
+                    <p>Ăn xong là phải có năng lượng - đó là lẽ thường tình. Nhưng thực tế, rất nhiều người trong chúng ta lại cảm thấy nặng nề, hụt hơi, thậm chí là buồn ngủ rũ rượi ngay sau một bữa ăn được coi là "bổ dưỡng".</p>
+                    
+                    <h3>1. Nghịch lý của sự bồi bổ</h3>
+                    <p>Tại sao chúng ta ăn để khỏe nhưng lại thấy mệt? Câu trả lời nằm ở "gánh nặng tiêu hóa". Khi bạn nạp vào một lượng lớn protein thô từ động vật hoặc các loại hạt chưa qua xử lý, dạ dày và đường ruột phải huy động một lượng lớn máu và oxy để phân giải khối thức ăn này.</p>
+                    <p>Cơ chế này khiến não bộ và các chi bị thiếu hụt năng lượng tạm thời, dẫn đến cảm giác uể oải mà dân gian hay gọi là "căng cơ bụng, chùng cơ mắt".</p>
+
+                    <h3>2. Khi đạm thô trở thành kẻ ngáng đường</h3>
+                    <p>Với những người có hệ tiêu hóa nhạy cảm, người lớn tuổi hoặc người mới ốm dậy, khả năng tiết enzyme tiêu hóa bị suy giảm. Khi đó, đạm không được phân giải hết sẽ bị lên men trong đường ruột, gây ra tình trạng đầy hơi, chướng bụng và mệt mỏi kéo dài.</p>
+
+                    <h3>3. Giải pháp từ Đạm Thủy Phân Happy</h3>
+                    <p>Đạm thủy phân là loại đạm đã được "tiêu hóa trước" bằng công nghệ enzyme hiện đại, chẻ nhỏ các chuỗi protein dài thành các axit amin và peptide siêu nhỏ. Khi đi vào cơ thể, loại đạm này không cần tốn năng lượng để phân giải mà sẽ thẩm thấu trực tiếp qua thành ruột vào máu trong vòng 10-15 phút.</p>
+                    <p>Kết quả là bạn nhận được nguồn năng lượng tinh khiết nhất mà hoàn toàn không để lại cảm giác nặng nề cho dạ dày.</p>
+
+                    <h3>Lời kết</h3>
+                    <p>Đừng để mỗi bữa ăn trở thành một cuộc chiến của dạ dày. Hãy chọn cách bồi bổ thông minh để cơ thể luôn nhẹ nhàng và tràn đầy sức sống mỗi ngày.</p>
+                `
+            },
+            {
+                title: "Đạm thực vật vs Đạm động vật: Đâu là lựa chọn tối ưu?",
+                date: "07 Tháng 4, 2026",
+                content: `
+                    <p>Trong hành trình tìm kiếm sức khỏe bền vững, câu hỏi về nguồn đạm luôn là chủ đề được quan tâm hàng đầu. Chúng ta nên chọn đạm từ thịt, cá hay từ các loài thực vật?</p>
+                    
+                    <h3>1. Sự khác biệt về cấu trúc</h3>
+                    <p>Đạm động vật thường đi kèm với nhiều chất béo bão hòa và cholesterol. Ngược lại, đạm thực vật từ đậu nành, hạnh nhân, hay đậu xanh lại giàu chất xơ và các phytonutrient giúp chống oxy hóa.</p>
+
+                    <h3>2. Khả năng hấp thụ</h3>
+                    <p>Mặc dù đạm động vật có hồ sơ axit amin đầy đủ, nhưng nó lại khó tiêu hóa hơn. Đặc biệt với những người mắc chứng bất dung nạp lactose hoặc dị ứng đạm sữa bò, đạm thực vật là cứu cánh duy nhất.</p>
+
+                    <h3>3. Tại sao nên chọn đạm thực vật thủy phân?</h3>
+                    <p>Công nghệ thủy phân loại bỏ hoàn toàn nhược điểm "khó tiêu" của các loại hạt truyền thống, tạo ra một nguồn protein hoàn hảo: Vừa tinh khiết, vừa hấp thụ nhanh, vừa lành tính với mọi đối tượng.</p>
+                `
+            },
+            {
+                title: "5 Phút Mỗi Sáng: Bí quyết năng lượng không lo đầy bụng",
+                date: "07 Tháng 4, 2026",
+                content: `
+                    <p>Buổi sáng là thời điểm quan trọng nhất để nạp năng lượng, nhưng cũng là lúc dạ dày nhạy cảm nhất sau một giấc ngủ dài. Một bữa sáng quá nặng nề đôi khi sẽ làm hỏng cả ngày làm việc của bạn.</p>
+                    
+                    <h3>Công thức "Sáng Nhẹ Nhàng"</h3>
+                    <p>Chỉ cần 5 phút với 2 muỗng đạm Happy pha cùng 200ml nước ấm 50 độ C. Bạn sẽ có ngay một bữa sáng đầy đủ dinh dưỡng, giúp cơ thể tỉnh táo mà bụng vẫn nhẹ tênh.</p>
+                    
+                    <h3>Lợi ích vượt trội</h3>
+                    <p>- Cung cấp năng lượng tức thì cho não bộ.<br>- Bảo vệ niêm mạc dạ dày.<br>- Giữ dáng, khỏe da từ bên trong.</p>
+                `
+            }
+        ];
+
+        function openBlog(index) {
+            const article = blogArticles[index];
+            document.getElementById('modalTitle').innerText = article.title;
+            document.getElementById('modalDate').innerText = "📅 " + article.date;
+            document.getElementById('modalBody').innerHTML = article.content;
+            document.getElementById('blogModal').classList.add('show');
+            document.body.style.overflow = 'hidden'; // Khóa cuộn trang
+        }
+
+        function closeBlog() {
+            document.getElementById('blogModal').classList.remove('show');
+            document.body.style.overflow = 'auto'; // Mở lại cuộn trang
+        }
+
+        // Đóng modal khi click ra ngoài container
+        window.onclick = function(event) {
+            const modal = document.getElementById('blogModal');
+            if (event.target == modal) {
+                closeBlog();
+            }
+        }
 
         function handleSubmit(e) {
             e.preventDefault();
@@ -1787,6 +2008,247 @@
         });
     </script>
 
+    <!-- SUCCESS MODAL và các phần khác đã có phía trên -->
+
+    <style>
+        /* Chatbot Style Integration */
+        .float-chat {
+            background: var(--primary);
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .float-chat svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        #chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 550px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease-out;
+            cursor: default;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+
+        .bot-msg {
+            background: #e1efe6;
+            color: var(--primary-dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .user-msg {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        #chat-options {
+            padding: 12px;
+            background: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-top: 1px solid #eee;
+            max-height: 160px; /* Limit height to prevent overflow */
+            overflow-y: auto; /* Enable vertical scrolling for many questions */
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: var(--primary) #f1f1f1;
+        }
+
+        #chat-options::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #chat-options::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .option-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        #chat-footer {
+            padding: 15px;
+            background: #fff;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-buy-btn {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .chat-buy-btn:hover {
+            background: var(--accent-dark);
+            transform: scale(1.02);
+        }
+    </style>
+
+
+    <script>
+        const chatData = {
+            questions: [
+                { q: "Sữa này dễ uống không?", a: "Thật ra đạm Happy có vị thanh mát tự nhiên, không hề bị ngấy hay quá ngọt như các loại sữa công thức đâu. Bạn có thể pha cùng nước ấm hoặc mix với sinh tố để đổi vị mỗi sáng nhé.", tags: ["uống", "vị", "ngon", "dễ"] },
+                { q: "Người bị tiểu đường, mỡ máu uống được không?", a: "Cực kỳ tốt luôn các bạn ạ. Sản phẩm nhà mình 100% thực vật, không cholesterol và không chứa đường tinh luyện, giúp ổn định huyết áp và bảo vệ tim mạch rất tốt.", tags: ["tiểu đường", "mỡ máu", "tim mạch", "bệnh", "huyết áp"] },
+                { q: "Sao giá hơi cao so với đạm thường?", a: "À, thật ra là vì Happy dùng công nghệ thuỷ phân cao cấp đó bạn. Đạm được cắt nhỏ thành axit amin giúp cơ thể hấp thu đến 99%. Các loại đạm thường mình uống vào chỉ hấp thu được rất ít, phần còn lại bị đào thải nên tính ra vừa lãng phí vừa gây áp lực cho dạ dày.", tags: ["đắt", "cao", "tiền", "so sánh"] },
+                { q: "Trẻ em uống được không?", a: "Trẻ từ 3 tuổi trở lên là dùng thoải mái rồi bạn nhé. Đạm sạch giúp bé phát triển thể chất và tăng đề kháng rất hiệu quả.", tags: ["trẻ em", "bé", "con", "nhỏ"] },
+                { q: "Uống bao lâu thì thấy khoẻ ra?", a: "Chỉ cần uống đều 7 ngày thôi là bạn sẽ thấy hệ tiêu hoá nhẹ nhàng hẳn, không còn đầy bụng, người lúc nào cũng thấy tràn đầy năng lượng hơn.", tags: ["bao lâu", "hiệu quả", "tác dụng", "7 ngày"] },
+                { q: "Phụ nữ mang thai dùng được không?", a: "Được quá chứ bạn. Đây là nguồn đạm sạch, lành tính, giúp mẹ bầu bổ sung dưỡng chất mà không lo ngại các chất béo xấu.", tags: ["bầu", "mang thai", "mẹ", "có thai"] },
+                { q: "Có gây táo bón không?", a: "Hoàn toàn không nha. Nhờ công nghệ thuỷ phân và nguồn gốc thực vật nên cực kỳ êm dịu, giúp hệ tiêu hoá hoạt động trơn tru hơn nhiều.", tags: ["táo bón", "khó đi", "tiêu hóa", "nóng"] },
+                { q: "Pha với nước nóng hay nước lạnh?", a: "Tốt nhất là bạn pha với nước ấm khoảng 40-50 độ nhé. Không cần quá phức tạp, lắc nhẹ là tan hết, giữ nguyên được dưỡng chất.", tags: ["pha", "nước nóng", "nước lạnh", "cách dùng"] },
+                { q: "Một ngày nên uống mấy lần?", a: "Mỗi ngày 1-2 ly vào bữa sáng hoặc bữa phụ chiều là lý tưởng nhất để duy trì năng lượng cho cả ngày dài.", tags: ["mấy lần", "tần suất", "liều lượng"] },
+                { q: "Ship bao lâu thì nhận được?", a: "Bên mình giao hàng toàn quốc nhanh lắm, thường chỉ 2-3 ngày là bạn nhận được hàng tận tay rồi.", tags: ["ship", "giao hàng", "vận chuyển", "nhận hàng"] },
+                { q: "Sản phẩm này giá bao nhiêu?", a: "Dạ, hiện tại 1 hộp đạm Happy có giá là **590.000đ** (giá niêm yết 720.000đ). Đặc biệt nếu bạn lấy combo 2 hộp thì giá chỉ còn **1.180.000đ**, lại còn được tặng kèm 1 bình lắc cao cấp và miễn phí giao hàng tận nhà nữa đó ạ! Bạn có thể xem chi tiết ưu đãi tại <a href='#survey' style='color:var(--accent);font-weight:bold;'>form đăng ký này</a> nhé.", tags: ["giá", "bao nhiêu", "nhiêu", "tiền", "mua"] },
+                { q: "Có thực sự phù hợp với mình không?", a: "Chắc chắn là có bạn nhé! Vì đây là đạm thực vật thuỷ phân, hạt đạm siêu nhỏ hấp thu trực tiếp. Dù bạn tập gym, ăn chay, người lớn tuổi cần hồi phục hay mẹ bầu... đều dùng rất tốt. Bạn có thể để lại tình trạng sức khỏe tại <a href='#survey' style='color:var(--accent);font-weight:bold;'>form khảo sát</a> để mình tư vấn kỹ hơn nhé!", tags: ["phù hợp", "hợp", "tốt không", "gym", "ăn chay", "già"] },
+                { q: "Để mình nghĩ thêm đã nhé.", a: "Dạ mình hoàn toàn hiểu ạ! Việc chọn sản phẩm sức khoẻ cần cân nhắc kỹ là đúng rồi. Nếu bạn còn băn khoăn gì cứ nhắn mình nhé. Bạn có thể để lại thông tin tại <a href='#survey' style='color:var(--accent);font-weight:bold;'>form khảo sát này</a> để mình gửi tặng tài liệu dinh dưỡng tham khảo ạ!", tags: ["nghĩ", "suy nghĩ", "tham khảo", "xem thêm"] }
+            ]
+        };
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = (win.style.display === 'flex' ? 'none' : 'flex');
+            if (win.style.display === 'flex') {
+                renderOptions();
+            }
+        }
+
+        function renderOptions() {
+            const container = document.getElementById('chat-options');
+            container.innerHTML = '';
+            chatData.questions.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = item.q;
+                btn.onclick = () => askQuestion(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function askQuestion(index) {
+            const item = chatData.questions[index];
+            addMessage(item.q, 'user-msg');
+            
+            setTimeout(() => {
+                addMessage(item.a, 'bot-msg');
+            }, 500);
+        }
+
+        function addMessage(text, type) {
+            const body = document.getElementById('chat-body');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.innerHTML = text;
+            body.appendChild(msg);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user-msg');
+            input.value = '';
+
+            setTimeout(() => {
+                const response = findResponse(text);
+                addMessage(response, 'bot-msg');
+            }, 800);
+        }
+
+        function findResponse(text) {
+            const lowerText = text.toLowerCase();
+            for (let item of chatData.questions) {
+                for (let tag of item.tags) {
+                    if (lowerText.includes(tag)) return item.a;
+                }
+            }
+            return "Thật ra câu hỏi này hơi chuyên sâu, bạn có thể chọn các chủ đề mình đã chuẩn bị bên dưới hoặc để lại số điện thoại mình alo tư vấn kỹ hơn cho bạn nhé!";
+        }
+
+        function showBuyNow() {
+            addMessage("Tôi muốn mua nhận ưu đãi!", 'user-msg');
+            setTimeout(() => {
+                addMessage("Dạ tuyệt vời quá! Hiện tại bên mình đang có ưu đãi: Mua 2 tặng 1 bình lắc + Freeship. Bạn click vào nút bên dưới để điền thông tin nhé!", 'bot-msg');
+                document.getElementById('survey').scrollIntoView({ behavior: 'smooth' });
+                toggleChat();
+            }, 500);
+        }
+
+        // Enter key to send
+        document.getElementById('chat-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 
 </html>
