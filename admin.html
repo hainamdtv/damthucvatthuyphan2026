@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HAPPA MALL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0B6E3F;
+            --primary-dark: #074d2c;
+            --primary-light: #f0f7f3;
+            --accent: #F4C01D;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #111827;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --text-main: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #f9fafb; color: var(--text-main); display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo { 
+            font-size: 22px; 
+            font-weight: 800; 
+            color: var(--accent); 
+            margin-bottom: 48px; 
+            text-align: center;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .nav-group { display: flex; flex-direction: column; gap: 8px; }
+        
+        .nav-item {
+            padding: 14px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--gray-400);
+        }
+
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(11, 110, 63, 0.4); }
+
+        .main { flex: 1; padding: 48px; max-width: 1600px; margin: 0 auto; width: 100%; }
+        
+        .header-section { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 40px; 
+        }
+
+        h1 { font-size: 32px; font-weight: 800; color: var(--dark); letter-spacing: -1px; }
+
+        .card { 
+            background: white; 
+            border-radius: 24px; 
+            padding: 32px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 10px 40px rgba(0,0,0,0.02);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .tab-content { display: none; animation: slideIn 0.3s ease-out; }
+        .tab-content.active { display: block; }
+
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 12px; }
+        th { 
+            text-align: left; 
+            padding: 16px 20px; 
+            border-bottom: 1px solid var(--gray-200); 
+            color: var(--gray-600); 
+            text-transform: uppercase; 
+            font-size: 11px; 
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+        td { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); font-size: 14px; color: var(--gray-600); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--gray-100); }
+
+        .item-title { font-weight: 700; color: var(--dark); font-size: 15px; }
+        .item-subtitle { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+
+        .badge { 
+            padding: 6px 14px; 
+            border-radius: 99px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+        .badge-success { background: #ecfdf5; color: #065f46; }
+        .badge-success::before { background: #10b981; }
+        
+        .badge-pending { background: #fffbeb; color: #92400e; }
+        .badge-pending::before { background: #f59e0b; }
+
+        .btn { 
+            padding: 12px 24px; 
+            border-radius: 14px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 700; 
+            transition: all 0.2s; 
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(11, 110, 63, 0.2); }
+
+        .btn-action { 
+            background: transparent; 
+            color: var(--gray-600); 
+            padding: 8px 12px; 
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        .btn-action:hover { background: var(--gray-200); color: var(--dark); }
+        .btn-delete:hover { background: #fee2e2; color: var(--danger); }
+
+        .modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(17, 24, 39, 0.7); 
+            z-index: 1000; 
+            justify-content: center; 
+            align-items: center; 
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-box { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 32px; 
+            width: 100%;
+            max-width: 550px; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--dark); margin-top: 10px; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px 18px; 
+            margin-bottom: 5px; 
+            border: 2px solid var(--gray-200); 
+            border-radius: 12px; 
+            outline: none; 
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+        .empty-state { text-align: center; padding: 60px 0; color: var(--gray-400); }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">HAPPA ADMIN</div>
+        <div class="nav-group">
+            <div class="nav-item active" id="nav-products" onclick="showTab('products')">📦 &nbsp; Sản phẩm</div>
+            <div class="nav-item" id="nav-customers" onclick="showTab('customers')">👥 &nbsp; Khách hàng</div>
+            <div class="nav-item" id="nav-orders" onclick="showTab('orders')">🛍️ &nbsp; Đơn hàng</div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="header-section">
+            <h1 id="tab-title">Quản lý Sản phẩm</h1>
+            <button class="btn btn-primary" id="btn-add-main" onclick="openModal()">+ Thêm mới</button>
+        </div>
+
+        <div id="products" class="tab-content card active">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%">Thông tin sản phẩm</th>
+                        <th>Giá bán</th>
+                        <th>Tồn kho</th>
+                        <th style="text-align: right;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="products-list"></tbody>
+            </table>
+        </div>
+
+        <div id="customers" class="tab-content card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Khách hàng</th>
+                        <th>Thông tin liên hệ</th>
+                        <th>Ngày đăng ký</th>
+                    </tr>
+                </thead>
+                <tbody id="customers-list"></tbody>
+            </table>
+        </div>
+
+        <div id="orders" class="tab-content card" style="overflow-x: auto;">
+            <table style="min-width: 1000px;">
+                <thead>
+                    <tr>
+                        <th>Đơn</th>
+                        <th>Khách hàng & SĐT</th>
+                        <th>Sản phẩm & SL</th>
+                        <th>Thành tiền</th>
+                        <th>Địa chỉ giao hàng</th>
+                        <th>Trạng thái</th>
+                        <th style="text-align: right;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Form -->
+    <div class="modal" id="formModal">
+        <div class="modal-box">
+            <h2 id="modal-title" style="margin-bottom: 24px; font-weight: 800;">Tạo mục mới</h2>
+            <div id="modal-body"></div>
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button class="btn" onclick="closeModal()" style="background: var(--gray-100); flex: 1; color: var(--gray-600); justify-content: center;">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="saveData()" style="flex: 1; justify-content: center;">Hoàn tất</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'products';
+        let products = [];
+        let customers = [];
+        let orders = [];
+
+        async function loadData() {
+            try {
+                const [pRes, cRes, oRes] = await Promise.all([
+                    fetch('/api/admin/products').then(r => r.json()),
+                    fetch('/api/admin/customers').then(r => r.json()),
+                    fetch('/api/admin/orders').then(r => r.json())
+                ]);
+                products = pRes;
+                customers = cRes;
+                orders = oRes;
+                renderAll();
+            } catch (e) {
+                console.error("Load failed:", e);
+            }
+        }
+
+        function renderAll() {
+            // Products
+            const pList = document.getElementById('products-list');
+            pList.innerHTML = products.length === 0 ? '<tr><td colspan="4" class="empty-state">Trống</td></tr>' : products.map(p => `
+                <tr>
+                    <td>
+                        <div class="item-title">${p.name}</div>
+                        <div class="item-subtitle">${p.description || '-'}</div>
+                    </td>
+                    <td class="item-title">${p.price.toLocaleString()}đ</td>
+                    <td><span style="font-weight: 600;">${p.quantity}</span></td>
+                    <td style="text-align: right;">
+                        <button class="btn btn-action btn-delete" onclick="deleteItem('products', ${p.id})">Xoá</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Customers
+            const cList = document.getElementById('customers-list');
+            cList.innerHTML = customers.map(c => `
+                <tr>
+                    <td><div class="item-title">${c.name}</div></td>
+                    <td>
+                        <div style="font-weight: 600;">${c.phone}</div>
+                        <div class="item-subtitle">${c.zalo ? 'Zalo: ' + c.zalo : '-'}</div>
+                    </td>
+                    <td>${new Date(c.registration_date).toLocaleDateString('vi-VN')}</td>
+                </tr>
+            `).join('');
+
+            // Orders
+            const oList = document.getElementById('orders-list');
+            oList.innerHTML = orders.map(o => `
+                <tr>
+                    <td><span style="font-family: monospace; font-weight: 800; color:var(--primary)">#${o.id}</span></td>
+                    <td>
+                        <div class="item-title">${o.customer_name}</div>
+                        <div style="font-size: 13px; font-weight: 600;">${o.customer_phone}</div>
+                    </td>
+                    <td>
+                        <div class="item-title">${o.product_name}</div>
+                        <div class="item-subtitle">Số lượng: <b>${o.quantity || 1}</b></div>
+                    </td>
+                    <td>
+                        <div class="item-title" style="color: var(--primary)">${o.amount.toLocaleString()}đ</div>
+                    </td>
+                    <td style="max-width: 250px;">
+                        <div style="font-size: 13px; line-height: 1.4;">${o.address || '<i style="color:#ccc">Trống</i>'}</div>
+                        <div class="item-subtitle" style="color: #666; font-style: italic;">${o.note ? '📝 ' + o.note : ''}</div>
+                    </td>
+                    <td><span class="badge ${o.status === 'success' ? 'badge-success' : 'badge-pending'}">${o.status === 'success' ? 'Đã thu' : 'Chờ quét'}</span></td>
+                    <td style="text-align: right;">
+                        <button class="btn btn-action btn-delete" onclick="deleteItem('orders', ${o.id})">Xoá</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            document.getElementById(`nav-${tab}`).classList.add('active');
+            
+            const titles = { products: 'Quản lý Sản phẩm', customers: 'Quản lý Khách hàng', orders: 'Quản lý Đơn hàng' };
+            document.getElementById('tab-title').innerText = titles[tab];
+        }
+
+        function openModal() {
+            const body = document.getElementById('modal-body');
+            const title = document.getElementById('modal-title');
+            
+            if (currentTab === 'products') {
+                title.innerText = "Thêm Sản Phẩm Mới";
+                body.innerHTML = `
+                    <label class="form-label">Tên sản phẩm</label>
+                    <input type="text" id="p-name" placeholder="Ví dụ: Đạm thực vật Happy">
+                    <label class="form-label">Giá bán (VNĐ)</label>
+                    <input type="number" id="p-price" placeholder="590000">
+                    <label class="form-label">Tồn kho</label>
+                    <input type="number" id="p-quantity" value="100">
+                    <label class="form-label">Mô tả</label>
+                    <textarea id="p-desc" rows="2"></textarea>
+                `;
+            } else if (currentTab === 'orders') {
+                title.innerText = "Tạo Đơn Hàng Mới";
+                body.innerHTML = `
+                    <label class="form-label">Khách hàng</label>
+                    <select id="o-customer">
+                        ${customers.map(c => `<option value="${c.phone}">${c.name} (${c.phone})</option>`).join('')}
+                    </select>
+                    <label class="form-label">Sản phẩm</label>
+                    <select id="o-product">
+                        ${products.map(p => `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`).join('')}
+                    </select>
+                    <label class="form-label">Số lượng</label>
+                    <input type="number" id="o-qty" value="1">
+                    <label class="form-label">Địa chỉ giao hàng</label>
+                    <input type="text" id="o-address" placeholder="Địa chỉ cụ thể">
+                    <label class="form-label">Ghi chú</label>
+                    <textarea id="o-note" rows="2"></textarea>
+                `;
+            }
+            document.getElementById('formModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('formModal').style.display = 'none'; }
+
+        async function saveData() {
+            let data = {};
+            let endpoint = `/api/admin/${currentTab}`;
+            
+            if (currentTab === 'products') {
+                data = {
+                    name: document.getElementById('p-name').value,
+                    price: parseInt(document.getElementById('p-price').value),
+                    quantity: parseInt(document.getElementById('p-quantity').value),
+                    description: document.getElementById('p-desc').value
+                };
+            } else if (currentTab === 'orders') {
+                const pSelect = document.getElementById('o-product');
+                const qty = parseInt(document.getElementById('o-qty').value);
+                const unitPrice = parseInt(pSelect.options[pSelect.selectedIndex].dataset.price);
+                data = {
+                    phone: document.getElementById('o-customer').value,
+                    name: customers.find(c => c.phone === document.getElementById('o-customer').value).name,
+                    product_id: pSelect.value,
+                    quantity: qty,
+                    amount: unitPrice * qty,
+                    address: document.getElementById('o-address').value,
+                    note: document.getElementById('o-note').value
+                };
+            }
+
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(r => r.json());
+
+            if (res.success) {
+                closeModal();
+                loadData();
+            } else {
+                alert("Lỗi: " + res.error);
+            }
+        }
+
+        async function deleteItem(table, id) {
+            if (confirm("Xoá?")) {
+                await fetch(`/api/admin/${table}?id=${id}`, { method: 'DELETE' });
+                loadData();
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
